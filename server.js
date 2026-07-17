@@ -3,7 +3,10 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Readable } from 'stream';
 import { resolveGoogleDrive, resolveCrtankoMovie, resolveFilmativa } from './resolver.js';
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.join(__dirname, 'crtanko_db.json');
@@ -197,12 +200,12 @@ app.get('/stream/:type/:id.json', async (req, res) => {
                   url: directStreamUrl
                 });
                 resolved = true;
-              } else {
-                streams.push({
-                  name: `Crtanko S${season}E${episode} (Web Player)`,
-                  externalUrl: gdUrl
-                });
               }
+              // Add Web Player as option
+              streams.push({
+                name: `Crtanko S${season}E${episode} (Web Player)`,
+                externalUrl: gdUrl
+              });
             } else {
               streams.push({
                 name: `Crtanko S${season}E${episode} (Web Player)`,
@@ -232,6 +235,95 @@ app.get('/stream/:type/:id.json', async (req, res) => {
   }
   
   res.json({ streams });
+});
+
+// Proxy endpoint for .m3u8 playlists
+app.get('/proxy/m3u8', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send('Missing url parameter');
+  
+  try {
+    const targetUrl = Buffer.from(url, 'base64').toString('utf-8');
+    console.log(`[Proxy] Resolving playlist: ${targetUrl}`);
+    
+    const response = await fetch(targetUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://player.filmativa.club/'
+      }
+    });
+    
+    if (!response.ok) {
+      console.error(`[Proxy] Failed to fetch m3u8 playlist. Status: ${response.status}`);
+      return res.status(response.status).send('Failed to fetch m3u8 playlist');
+    }
+    
+    const playlistText = await response.text();
+    
+    // Resolve relative TS paths relative to the playlist URL
+    const baseUrl = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
+    
+    const lines = playlistText.split('\n');
+    const rewrittenLines = [];
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.get('host');
+    const proxyBase = `${protocol}://${host}/proxy/ts`;
+    
+    for (let line of lines) {
+      line = line.trim();
+      if (line && !line.startsWith('#')) {
+        // This is a TS segment
+        let tsUrl = line;
+        if (!line.startsWith('http')) {
+          tsUrl = new URL(line, baseUrl).toString();
+        }
+        const encodedTsUrl = Buffer.from(tsUrl).toString('base64');
+        rewrittenLines.push(`${proxyBase}?url=${encodedTsUrl}`);
+      } else {
+        rewrittenLines.push(line);
+      }
+    }
+    
+    res.setHeader('Content-Type', 'application/x-mpegURL');
+    res.send(rewrittenLines.join('\n'));
+  } catch (err) {
+    console.error('[Proxy] Error proxying m3u8:', err.message);
+    res.status(500).send('Error proxying m3u8');
+  }
+});
+
+// Proxy endpoint for video segments (.ts chunks)
+app.get('/proxy/ts', async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send('Missing url parameter');
+  
+  try {
+    const targetUrl = Buffer.from(url, 'base64').toString('utf-8');
+    
+    const response = await fetch(targetUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://player.filmativa.club/'
+      }
+    });
+    
+    if (!response.ok) {
+      return res.status(response.status).send('Failed to fetch TS segment');
+    }
+    
+    res.setHeader('Content-Type', 'video/mp2t');
+    
+    // Pipe response body
+    if (response.body) {
+      const nodeReadable = Readable.fromWeb(response.body);
+      nodeReadable.pipe(res);
+    } else {
+      res.status(500).send('No body in segment response');
+    }
+  } catch (err) {
+    console.error('[Proxy] Error proxying TS segment:', err.message);
+    res.status(500).send('Error proxying TS segment');
+  }
 });
 
 export default app;
