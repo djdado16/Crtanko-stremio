@@ -52,6 +52,11 @@ const manifest = {
 
 // Root endpoint redirect or description
 app.get('/', (req, res) => {
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const host = req.get('host');
+  const manifestUrl = `${protocol}://${host}/manifest.json`;
+  const stremioUrl = manifestUrl.replace(/^https?/, 'stremio');
+
   res.send(`
     <html>
       <head>
@@ -60,15 +65,16 @@ app.get('/', (req, res) => {
           body { font-family: sans-serif; text-align: center; padding-top: 50px; background-color: #121214; color: #fff; }
           a { color: #8a2be2; text-decoration: none; font-weight: bold; border: 2px solid #8a2be2; padding: 10px 20px; border-radius: 5px; }
           a:hover { background-color: #8a2be2; color: #fff; }
+          code { background: #222; padding: 5px 10px; border-radius: 3px; border: 1px solid #333; }
         </style>
       </head>
       <body>
         <h1>Crtanko Stremio Addon</h1>
         <p>Instalirajte addon kopiranjem donjeg linka u Stremio Addons pretragu:</p>
         <p style="font-size: 1.2em; margin: 20px 0;">
-          <code>http://localhost:${PORT}/manifest.json</code>
+          <code>${manifestUrl}</code>
         </p>
-        <a href="stremio://localhost:${PORT}/manifest.json">Instaliraj u Stremio</a>
+        <a href="${stremioUrl}">Instaliraj u Stremio</a>
       </body>
     </html>
   `);
