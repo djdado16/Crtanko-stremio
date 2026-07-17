@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { resolveGoogleDrive, resolveCrtankoMovie } from './resolver.js';
+import { resolveGoogleDrive, resolveCrtankoMovie, resolveFilmativa } from './resolver.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_FILE = path.join(__dirname, 'crtanko_db.json');
@@ -173,7 +173,7 @@ app.get('/stream/:type/:id.json', async (req, res) => {
         if (item) {
           let resolved = false;
           
-          // Try to resolve Google Drive link first
+          // Try to resolve Google Drive or Filmativa link first
           if (item.streaming && item.streaming[episodeKey]) {
             const gdUrl = item.streaming[episodeKey];
             const gdIdMatch = gdUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
@@ -187,6 +187,21 @@ app.get('/stream/:type/:id.json', async (req, res) => {
                   url: directStreamUrl
                 });
                 resolved = true;
+              }
+            } else if (gdUrl.includes('player.filmativa.club')) {
+              console.log(`[Server] Resolving Filmativa link for episode ${episodeKey}: ${gdUrl}`);
+              const directStreamUrl = await resolveFilmativa(gdUrl);
+              if (directStreamUrl) {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Direct Player)`,
+                  url: directStreamUrl
+                });
+                resolved = true;
+              } else {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Web Player)`,
+                  externalUrl: gdUrl
+                });
               }
             } else {
               streams.push({
