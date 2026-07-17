@@ -141,66 +141,38 @@ app.get('/catalog/:type/:id/search=:query.json', (req, res) => {
 });
 
 /**
- * Replaces the base64-encoded server IP in a /secip/ CDN URL with the user's real IP.
- * CDN validates that the requesting IP matches the IP embedded in the URL.
- * By swapping in the user's IP, the CDN will accept requests from the user's Stremio player.
+ * Wraps a filmativa .m3u8 URL behind our /proxy/m3u8 endpoint.
+ * Vercel fetches the segments using the same outbound IP that was used when
+ * the CDN token was generated (via resolveFilmativa), so the IP check passes.
  */
-function replaceIpInSecipUrl(m3u8Url, userIp) {
-  if (!m3u8Url || !m3u8Url.includes('/secip/') || !userIp) return m3u8Url;
-  try {
-    const url = new URL(m3u8Url);
-    const segments = url.pathname.split('/');
-    // URL path: /secip/1/{token}/{b64ip}/{timestamp}/...
-    // Find the base64-encoded IP segment (it decodes to an IPv4 address)
-    for (let i = 0; i < segments.length; i++) {
-      const seg = segments[i];
-      if (seg.length < 8) continue; // too short to be a base64 IP
-      try {
-        const decoded = Buffer.from(seg, 'base64').toString('utf-8');
-        if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(decoded)) {
-          // Found the IP segment — replace with user's IP
-          segments[i] = Buffer.from(userIp).toString('base64');
-          url.pathname = segments.join('/');
-          const newUrl = url.toString();
-          console.log(`[IP Swap] Replaced server IP ${decoded} → user IP ${userIp}`);
-          return newUrl;
-        }
-      } catch (_) {}
-    }
-  } catch (e) {
-    console.error('[IP Swap] Error:', e.message);
-  }
-  return m3u8Url;
+function makeProxyUrl(req, m3u8Url) {
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const host = req.get('host');
+  const encoded = Buffer.from(m3u8Url).toString('base64url');
+  return `${protocol}://${host}/proxy/m3u8?url=${encoded}`;
 }
 
 // Stream endpoint
 app.get('/stream/:type/:id.json', async (req, res) => {
   const { type, id } = req.params;
   console.log(`[Server] Stream requested: type=${type}, id=${id}`);
-  
-  // Get the user's real IP from request headers (Vercel passes this through)
-  const userIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
-                 req.headers['x-real-ip'] ||
-                 req.socket?.remoteAddress ||
-                 '';
-  console.log(`[Server] User IP resolved as: ${userIp}`);
 
   const db = loadDatabase();
   const streams = [];
   
   try {
     if (type === 'movie') {
-      // Find movie by IMDb ID
       const item = db[id];
       if (item && item.apiData) {
-        // Resolve stream URLs, swapping IP in CDN URLs
-        const resolvedStreams = await resolveCrtankoMovie(id, item.apiData, userIp);
+        const resolvedStreams = await resolveCrtankoMovie(id, item.apiData);
         for (const s of resolvedStreams) {
-          if (s.url) s.url = replaceIpInSecipUrl(s.url, userIp);
+          // Wrap filmativa m3u8 URLs behind our proxy so Vercel fetches them (IP matches)
+          if (s.url && s.url.includes('.m3u8') && s.url.includes('cfglobalcdn')) {
+            console.log(`[Server] Wrapping filmativa stream in proxy: ${s.url.substring(0, 60)}...`);
+            s.url = makeProxyUrl(req, s.url);
+          }
           streams.push(s);
         }
-        
-        // Always provide a fallback to open in browser
         streams.push({
           name: "Crtanko Web Player (Browser)",
           externalUrl: item.url
@@ -236,17 +208,17 @@ app.get('/stream/:type/:id.json', async (req, res) => {
               }
             } else if (gdUrl.includes('player.filmativa.club')) {
               console.log(`[Server] Resolving Filmativa link for episode ${episodeKey}: ${gdUrl}`);
-              const directStreamUrl = await resolveFilmativa(gdUrl, userIp);
+              const directStreamUrl = await resolveFilmativa(gdUrl);
               if (directStreamUrl) {
-                // Swap in user's IP so CDN validates the stream for their player
-                const swappedUrl = replaceIpInSecipUrl(directStreamUrl, userIp);
+                // Proxy through Vercel so CDN IP check passes (Vercel's IP == token IP)
+                const proxiedUrl = makeProxyUrl(req, directStreamUrl);
+                console.log(`[Server] Filmativa stream proxied through Vercel: ${proxiedUrl.substring(0, 60)}...`);
                 streams.push({
                   name: `Crtanko S${season}E${episode} (Direct Player)`,
-                  url: swappedUrl
+                  url: proxiedUrl
                 });
                 resolved = true;
               }
-              // Add Web Player as option
               streams.push({
                 name: `Crtanko S${season}E${episode} (Web Player)`,
                 externalUrl: gdUrl
@@ -283,27 +255,32 @@ app.get('/stream/:type/:id.json', async (req, res) => {
 });
 
 // Proxy endpoint for .m3u8 playlists
+// Vercel fetches from CDN using the same outbound IP that generated the token.
 app.get('/proxy/m3u8', async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send('Missing url parameter');
   
   try {
-    const targetUrl = Buffer.from(url, 'base64').toString('utf-8');
-    console.log(`[Proxy] Resolving playlist: ${targetUrl}`);
+    const targetUrl = Buffer.from(url, 'base64url').toString('utf-8');
+    console.log(`[Proxy m3u8] Fetching: ${targetUrl.substring(0, 80)}...`);
     
     const response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://player.filmativa.club/'
+        'Referer': 'https://player.filmativa.club/',
+        'Origin': 'https://player.filmativa.club'
       }
     });
     
+    console.log(`[Proxy m3u8] CDN response status: ${response.status}`);
+    
     if (!response.ok) {
-      console.error(`[Proxy] Failed to fetch m3u8 playlist. Status: ${response.status}`);
-      return res.status(response.status).send('Failed to fetch m3u8 playlist');
+      console.error(`[Proxy m3u8] CDN returned error: ${response.status} ${response.statusText}`);
+      return res.status(response.status).send(`CDN error: ${response.status}`);
     }
     
     const playlistText = await response.text();
+    console.log(`[Proxy m3u8] Got playlist, ${playlistText.split('\n').length} lines`);
     
     // Resolve relative TS paths relative to the playlist URL
     const baseUrl = targetUrl.substring(0, targetUrl.lastIndexOf('/') + 1);
@@ -317,12 +294,12 @@ app.get('/proxy/m3u8', async (req, res) => {
     for (let line of lines) {
       line = line.trim();
       if (line && !line.startsWith('#')) {
-        // This is a TS segment
+        // This is a TS segment URL - proxy it too
         let tsUrl = line;
         if (!line.startsWith('http')) {
           tsUrl = new URL(line, baseUrl).toString();
         }
-        const encodedTsUrl = Buffer.from(tsUrl).toString('base64');
+        const encodedTsUrl = Buffer.from(tsUrl).toString('base64url');
         rewrittenLines.push(`${proxyBase}?url=${encodedTsUrl}`);
       } else {
         rewrittenLines.push(line);
@@ -330,10 +307,11 @@ app.get('/proxy/m3u8', async (req, res) => {
     }
     
     res.setHeader('Content-Type', 'application/x-mpegURL');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.send(rewrittenLines.join('\n'));
   } catch (err) {
-    console.error('[Proxy] Error proxying m3u8:', err.message);
-    res.status(500).send('Error proxying m3u8');
+    console.error('[Proxy m3u8] Error:', err.message, err.cause?.code || '');
+    res.status(500).send(`Proxy error: ${err.message}`);
   }
 });
 
@@ -343,22 +321,24 @@ app.get('/proxy/ts', async (req, res) => {
   if (!url) return res.status(400).send('Missing url parameter');
   
   try {
-    const targetUrl = Buffer.from(url, 'base64').toString('utf-8');
+    const targetUrl = Buffer.from(url, 'base64url').toString('utf-8');
     
     const response = await fetch(targetUrl, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://player.filmativa.club/'
+        'Referer': 'https://player.filmativa.club/',
+        'Origin': 'https://player.filmativa.club'
       }
     });
     
     if (!response.ok) {
-      return res.status(response.status).send('Failed to fetch TS segment');
+      console.error(`[Proxy ts] CDN error: ${response.status} for ${targetUrl.substring(0, 60)}`);
+      return res.status(response.status).send(`CDN error: ${response.status}`);
     }
     
     res.setHeader('Content-Type', 'video/mp2t');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     
-    // Pipe response body
     if (response.body) {
       const nodeReadable = Readable.fromWeb(response.body);
       nodeReadable.pipe(res);
@@ -366,8 +346,8 @@ app.get('/proxy/ts', async (req, res) => {
       res.status(500).send('No body in segment response');
     }
   } catch (err) {
-    console.error('[Proxy] Error proxying TS segment:', err.message);
-    res.status(500).send('Error proxying TS segment');
+    console.error('[Proxy ts] Error:', err.message, err.cause?.code || '');
+    res.status(500).send(`Proxy error: ${err.message}`);
   }
 });
 
