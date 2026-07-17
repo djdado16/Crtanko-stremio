@@ -293,6 +293,5 @@ app.get('/stream/:type/:id.json', async (req, res) => {
   
   res.json({ streams });
 });
-});
 
 export default app;
