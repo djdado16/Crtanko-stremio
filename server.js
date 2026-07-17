@@ -140,11 +140,51 @@ app.get('/catalog/:type/:id/search=:query.json', (req, res) => {
   res.json({ metas });
 });
 
+/**
+ * Replaces the base64-encoded server IP in a /secip/ CDN URL with the user's real IP.
+ * CDN validates that the requesting IP matches the IP embedded in the URL.
+ * By swapping in the user's IP, the CDN will accept requests from the user's Stremio player.
+ */
+function replaceIpInSecipUrl(m3u8Url, userIp) {
+  if (!m3u8Url || !m3u8Url.includes('/secip/') || !userIp) return m3u8Url;
+  try {
+    const url = new URL(m3u8Url);
+    const segments = url.pathname.split('/');
+    // URL path: /secip/1/{token}/{b64ip}/{timestamp}/...
+    // Find the base64-encoded IP segment (it decodes to an IPv4 address)
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i];
+      if (seg.length < 8) continue; // too short to be a base64 IP
+      try {
+        const decoded = Buffer.from(seg, 'base64').toString('utf-8');
+        if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(decoded)) {
+          // Found the IP segment — replace with user's IP
+          segments[i] = Buffer.from(userIp).toString('base64');
+          url.pathname = segments.join('/');
+          const newUrl = url.toString();
+          console.log(`[IP Swap] Replaced server IP ${decoded} → user IP ${userIp}`);
+          return newUrl;
+        }
+      } catch (_) {}
+    }
+  } catch (e) {
+    console.error('[IP Swap] Error:', e.message);
+  }
+  return m3u8Url;
+}
+
 // Stream endpoint
 app.get('/stream/:type/:id.json', async (req, res) => {
   const { type, id } = req.params;
   console.log(`[Server] Stream requested: type=${type}, id=${id}`);
   
+  // Get the user's real IP from request headers (Vercel passes this through)
+  const userIp = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() ||
+                 req.headers['x-real-ip'] ||
+                 req.socket?.remoteAddress ||
+                 '';
+  console.log(`[Server] User IP resolved as: ${userIp}`);
+
   const db = loadDatabase();
   const streams = [];
   
@@ -153,9 +193,12 @@ app.get('/stream/:type/:id.json', async (req, res) => {
       // Find movie by IMDb ID
       const item = db[id];
       if (item && item.apiData) {
-        // Resolve stream URLs
+        // Resolve stream URLs, swapping IP in CDN URLs
         const resolvedStreams = await resolveCrtankoMovie(id, item.apiData);
-        streams.push(...resolvedStreams);
+        for (const s of resolvedStreams) {
+          if (s.url) s.url = replaceIpInSecipUrl(s.url, userIp);
+          streams.push(s);
+        }
         
         // Always provide a fallback to open in browser
         streams.push({
@@ -195,9 +238,11 @@ app.get('/stream/:type/:id.json', async (req, res) => {
               console.log(`[Server] Resolving Filmativa link for episode ${episodeKey}: ${gdUrl}`);
               const directStreamUrl = await resolveFilmativa(gdUrl);
               if (directStreamUrl) {
+                // Swap in user's IP so CDN validates the stream for their player
+                const swappedUrl = replaceIpInSecipUrl(directStreamUrl, userIp);
                 streams.push({
                   name: `Crtanko S${season}E${episode} (Direct Player)`,
-                  url: directStreamUrl
+                  url: swappedUrl
                 });
                 resolved = true;
               }
