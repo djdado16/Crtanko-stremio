@@ -40,9 +40,10 @@ export async function resolveGoogleDrive(fileId) {
  * Resolves movie stream links from Crtanko page data.
  * @param {string} imdbId 
  * @param {object} apiData - MoviewpAPI object from page
+ * @param {string} [userIp] - Optional real IP of the requesting Stremio user
  * @returns {Promise<Array<{name: string, url?: string, externalUrl?: string}>>}
  */
-export async function resolveCrtankoMovie(imdbId, apiData) {
+export async function resolveCrtankoMovie(imdbId, apiData, userIp = null) {
   const streams = [];
   
   // 1. Resolve SD stream (usually roda.php or filemoon.php)
@@ -85,7 +86,7 @@ export async function resolveCrtankoMovie(imdbId, apiData) {
   if (apiData.videolinkhd) {
     if (apiData.videolinkhd.includes('player.filmativa.club')) {
       console.log(`[Movie Resolver] Resolving filmativa.club HD: ${apiData.videolinkhd}`);
-      const directUrl = await resolveFilmativa(apiData.videolinkhd);
+      const directUrl = await resolveFilmativa(apiData.videolinkhd, userIp);
       if (directUrl) {
         streams.push({
           name: "Crtanko HD (Direct Player)",
@@ -110,17 +111,24 @@ export async function resolveCrtankoMovie(imdbId, apiData) {
 
 /**
  * Resolves a filmativa.club embed player link to a direct .m3u8 stream.
+ * Forwards the user's real IP so Filmativa generates a token bound to the user's IP,
+ * allowing the user's Stremio player to stream directly from the CDN.
  * @param {string} embedUrl 
+ * @param {string} [userIp] - Optional real IP of the Stremio user
  * @returns {Promise<string|null>}
  */
-export async function resolveFilmativa(embedUrl) {
+export async function resolveFilmativa(embedUrl, userIp = null) {
   try {
-    const res = await fetch(embedUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://www.crtanko.xyz/'
-      }
-    });
+    const headers = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Referer': 'https://www.crtanko.xyz/'
+    };
+    if (userIp) {
+      headers['X-Forwarded-For'] = userIp;
+      headers['X-Real-IP'] = userIp;
+      console.log(`[Filmativa Resolver] Forwarding user IP ${userIp} to Filmativa`);
+    }
+    const res = await fetch(embedUrl, { headers });
     if (!res.ok) return null;
     const html = await res.text();
     const m3u8Match = html.match(/https?:\/\/[^"']+\.m3u8[^"']*/);

@@ -194,7 +194,7 @@ app.get('/stream/:type/:id.json', async (req, res) => {
       const item = db[id];
       if (item && item.apiData) {
         // Resolve stream URLs, swapping IP in CDN URLs
-        const resolvedStreams = await resolveCrtankoMovie(id, item.apiData);
+        const resolvedStreams = await resolveCrtankoMovie(id, item.apiData, userIp);
         for (const s of resolvedStreams) {
           if (s.url) s.url = replaceIpInSecipUrl(s.url, userIp);
           streams.push(s);
@@ -236,7 +236,7 @@ app.get('/stream/:type/:id.json', async (req, res) => {
               }
             } else if (gdUrl.includes('player.filmativa.club')) {
               console.log(`[Server] Resolving Filmativa link for episode ${episodeKey}: ${gdUrl}`);
-              const directStreamUrl = await resolveFilmativa(gdUrl);
+              const directStreamUrl = await resolveFilmativa(gdUrl, userIp);
               if (directStreamUrl) {
                 // Swap in user's IP so CDN validates the stream for their player
                 const swappedUrl = replaceIpInSecipUrl(directStreamUrl, userIp);
