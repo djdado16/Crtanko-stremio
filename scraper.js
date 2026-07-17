@@ -84,7 +84,9 @@ async function scrapePage(url) {
     
     // 3. Extract title, poster, year, rating, genres
     const title = apiData.tvtitle || html.match(/<h1[^>]*class="entry-title"[^>]*>([\s\S]*?)<\/h1>/)?.[1]?.replace(/<span[^>]*>[\s\S]*?<\/span>/g, '').trim() || '';
-    const poster = apiData.tvposter || apiData.noImg || '';
+    
+    const ogImageMatch = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/i);
+    const poster = ogImageMatch ? ogImageMatch[1] : (apiData.tvposter || apiData.noImg || '');
     
     // Parse Year
     let year = 2000;
