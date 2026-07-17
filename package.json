@@ -1,0 +1,15 @@
+{
+  "name": "stremio-crtanko",
+  "version": "1.0.0",
+  "description": "Stremio resolver addon for synchronized cartoons from crtanko.xyz",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "scrape": "node scraper.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}
