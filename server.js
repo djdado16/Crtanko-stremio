@@ -262,7 +262,7 @@ app.get('/stream/:type/:id.json', async (req, res) => {
 function curlFetch(url, extraHeaders = []) {
   return new Promise((resolve, reject) => {
     const args = [
-      '-s', '-L', '--max-time', '10', '-w', '\n__STATUS__%{http_code}',
+      '-s', '-L', '-k', '--max-time', '10', '-w', '\n__STATUS__%{http_code}',
       '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       '-H', 'Referer: https://player.filmativa.club/',
       '-H', 'Origin: https://player.filmativa.club',
@@ -346,7 +346,7 @@ app.get('/proxy/ts', (req, res) => {
     const targetUrl = Buffer.from(url, 'base64url').toString('utf-8');
     
     const args = [
-      '-s', '-L', '--max-time', '30',
+      '-s', '-L', '-k', '--max-time', '30',
       '-H', 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       '-H', 'Referer: https://player.filmativa.club/',
       '-H', 'Origin: https://player.filmativa.club',
