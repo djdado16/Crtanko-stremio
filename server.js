@@ -100,6 +100,9 @@ async function resolveFilmativaM3u8(embedUrl) {
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
         'Accept-Language': 'hr-HR,hr;q=0.9,en-US;q=0.8,en;q=0.7',
         'Referer': 'https://www.crtanko.xyz/',
+        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
         'Sec-Fetch-Dest': 'iframe',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'cross-site',
@@ -113,17 +116,31 @@ async function resolveFilmativaM3u8(embedUrl) {
     }
 
     const html = await res.text();
+    console.log(`[Filmativa] HTML length: ${html.length}, HTTP: ${res.status}`);
 
-    // Match the m3u8 URL directly in the HTML/JS
-    const m3u8Match = html.match(/https?:\/\/[^"'\s]+\.m3u8[^"'\s]*/);
-    if (!m3u8Match) {
-      console.error(`[Filmativa] No m3u8 URL found in embed HTML`);
-      return null;
+    // Log first 600 chars to see what filmativa actually returns
+    console.log(`[Filmativa] HTML preview: ${html.substring(0, 600).replace(/\n/g, ' ')}`);
+
+    // Try multiple patterns to find the m3u8 URL
+    const patterns = [
+      /https?:\/\/[^"'\s]+\.m3u8[^"'\s]*/,     // standard
+      /file:\s*["']([^"']+\.m3u8[^"']*)/,        // jwplayer file: "..."
+      /source:\s*["']([^"']+\.m3u8[^"']*)/,      // source: "..."
+      /["'](https?:\/\/[^"']+\.m3u8[^"']*)/      // any quoted URL
+    ];
+
+    for (const pat of patterns) {
+      const match = html.match(pat);
+      if (match) {
+        const m3u8Url = match[1] || match[0];
+        console.log(`[Filmativa] Found m3u8 (pattern ${patterns.indexOf(pat)}): ${m3u8Url.substring(0, 80)}`);
+        return m3u8Url;
+      }
     }
 
-    const m3u8Url = m3u8Match[0];
-    console.log(`[Filmativa] Resolved m3u8: ${m3u8Url.substring(0, 80)}...`);
-    return m3u8Url;
+    // Log last 300 chars to catch end-of-page content too
+    console.error(`[Filmativa] No m3u8 found. HTML tail: ${html.slice(-300).replace(/\n/g, ' ')}`);
+    return null;
 
   } catch (err) {
     console.error(`[Filmativa] Error: ${err.message}`);
