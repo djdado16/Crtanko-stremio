@@ -1,11 +1,15 @@
 {
   "version": 2,
   "rewrites": [
+    { "source": "/hls/filmativa", "destination": "/api/hls-filmativa" },
     { "source": "/(.*)", "destination": "/api/index.js" }
   ],
   "functions": {
     "api/index.js": {
       "includeFiles": "crtanko_db.json"
+    },
+    "api/hls-filmativa.js": {
+      "runtime": "edge"
     }
   }
 }
