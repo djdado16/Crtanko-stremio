@@ -137,24 +137,71 @@ app.get('/hls/filmativa', async (req, res) => {
     const embedUrl = Buffer.from(embed, 'base64url').toString('utf-8');
     console.log(`[HLS] Re-resolving filmativa: ${embedUrl}`);
 
-    // Step 1 – resolve from THIS function's IP
-    const m3u8Url = await resolveFilmativa(embedUrl);
-    if (!m3u8Url) {
-      console.error('[HLS] resolveFilmativa returned null');
-      return res.status(502).send('Could not resolve filmativa stream');
+    // Step 1 – resolve from THIS function's IP, get cookies too
+    const filmRes = await fetch(embedUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'hr-HR,hr;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Referer': 'https://www.crtanko.xyz/',
+        'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'Sec-Fetch-Dest': 'iframe',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'cross-site',
+        'Upgrade-Insecure-Requests': '1'
+      }
+    });
+
+    if (!filmRes.ok) {
+      console.error(`[HLS] Filmativa embed HTTP ${filmRes.status}`);
+      return res.status(502).send('Could not load filmativa embed');
     }
+
+    // Capture any cookies filmativa sets, to forward to CDN
+    const setCookie = filmRes.headers.get('set-cookie') || '';
+    const cookies = setCookie.split(',').map(c => c.split(';')[0].trim()).filter(Boolean).join('; ');
+    if (cookies) console.log(`[HLS] Filmativa cookies: ${cookies}`);
+
+    const html = await filmRes.text();
+    const m3u8Match = html.match(/https?:\/\/[^"'\s]+\.m3u8[^"'\s]*/);
+    if (!m3u8Match) {
+      console.error('[HLS] No m3u8 URL found in filmativa embed HTML');
+      return res.status(502).send('Could not find m3u8 in filmativa embed');
+    }
+    const m3u8Url = m3u8Match[0];
 
     const vercelIp = extractIpFromSecipUrl(m3u8Url);
     console.log(`[HLS] CDN URL IP (Vercel): ${vercelIp}, User IP: ${userIp}`);
+    console.log(`[HLS] Fetching m3u8: ${m3u8Url.substring(0, 100)}...`);
 
     // Step 2 – fetch the playlist from CDN (same Vercel IP → token IP match)
-    const cdnRes = await fetch(m3u8Url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': 'https://player.filmativa.club/',
-        'Origin': 'https://player.filmativa.club'
-      }
-    });
+    // Use full browser headers including Sec-Fetch-* which Chrome sends for media requests
+    const cdnHeaders = {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      'Accept': '*/*',
+      'Accept-Language': 'hr-HR,hr;q=0.9,en-US;q=0.8,en;q=0.7',
+      'Accept-Encoding': 'gzip, deflate, br',
+      'Referer': 'https://player.filmativa.club/',
+      'Origin': 'https://player.filmativa.club',
+      'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+      'sec-ch-ua-mobile': '?0',
+      'sec-ch-ua-platform': '"Windows"',
+      'Sec-Fetch-Dest': 'empty',
+      'Sec-Fetch-Mode': 'cors',
+      'Sec-Fetch-Site': 'cross-site'
+    };
+    if (cookies) cdnHeaders['Cookie'] = cookies;
+
+    let cdnRes;
+    try {
+      cdnRes = await fetch(m3u8Url, { headers: cdnHeaders });
+    } catch (fetchErr) {
+      const cause = fetchErr.cause;
+      console.error(`[HLS] CDN fetch failed - cause: ${cause?.code || cause?.message || fetchErr.message}`);
+      return res.status(502).send(`CDN connection failed: ${cause?.code || fetchErr.message}`);
+    }
 
     if (!cdnRes.ok) {
       console.error(`[HLS] CDN returned HTTP ${cdnRes.status} for m3u8`);
@@ -170,11 +217,7 @@ app.get('/hls/filmativa', async (req, res) => {
     const rewritten = playlistText.split('\n').map(line => {
       const trimmed = line.trim();
       if (!trimmed || trimmed.startsWith('#')) return trimmed;
-
-      // Resolve relative TS paths
       const tsUrl = trimmed.startsWith('http') ? trimmed : new URL(trimmed, baseUrl).toString();
-
-      // Swap Vercel's IP → user's IP so CDN accepts direct requests from Stremio
       const finalUrl = (vercelIp && userIp) ? swapIpInSecipUrl(tsUrl, userIp) : tsUrl;
       return finalUrl;
     }).join('\n');
@@ -184,10 +227,11 @@ app.get('/hls/filmativa', async (req, res) => {
     res.send(rewritten);
 
   } catch (err) {
-    console.error('[HLS] Error:', err.message);
+    console.error('[HLS] Error:', err.message, err.cause?.code);
     res.status(500).send(`HLS proxy error: ${err.message}`);
   }
 });
+
 
 // ─── STREAM ENDPOINT ──────────────────────────────────────────────────────────
 app.get('/stream/:type/:id.json', async (req, res) => {
