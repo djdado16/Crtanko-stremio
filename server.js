@@ -76,26 +76,68 @@ app.get('/catalog/:type/:id.json', (req, res) => {
   res.json({ metas });
 });
 
-// ─── STREAM ───────────────────────────────────────────────────────────────────
+// ─── FILMATIVA RESOLVER ───────────────────────────────────────────────────────
+/**
+ * Fetches a filmativa embed page and extracts the direct .m3u8 CDN URL.
+ *
+ * KEY INSIGHT: The filmativa CDN (4fw4gd.cfglobalcdn.com) blocks ALL
+ * datacenter IPs (AWS, Cloudflare, etc.) but allows residential IPs.
+ * By returning the direct m3u8 URL to Stremio instead of proxying it,
+ * Stremio/ExoPlayer fetches the CDN directly from the user's residential
+ * IP – which the CDN allows.
+ *
+ * The IP embedded in the /secip/ URL path is part of the HMAC token
+ * signature (used to prevent link sharing), but the CDN does NOT check
+ * requesting IP == embedded IP. Normal browser users watch with their
+ * own IPs just fine.
+ */
+async function resolveFilmativaM3u8(embedUrl) {
+  try {
+    console.log(`[Filmativa] Resolving: ${embedUrl}`);
+    const res = await fetch(embedUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'Accept-Language': 'hr-HR,hr;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Referer': 'https://www.crtanko.xyz/',
+        'Sec-Fetch-Dest': 'iframe',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'cross-site',
+        'Upgrade-Insecure-Requests': '1'
+      }
+    });
+
+    if (!res.ok) {
+      console.error(`[Filmativa] HTTP ${res.status} for ${embedUrl}`);
+      return null;
+    }
+
+    const html = await res.text();
+
+    // Match the m3u8 URL directly in the HTML/JS
+    const m3u8Match = html.match(/https?:\/\/[^"'\s]+\.m3u8[^"'\s]*/);
+    if (!m3u8Match) {
+      console.error(`[Filmativa] No m3u8 URL found in embed HTML`);
+      return null;
+    }
+
+    const m3u8Url = m3u8Match[0];
+    console.log(`[Filmativa] Resolved m3u8: ${m3u8Url.substring(0, 80)}...`);
+    return m3u8Url;
+
+  } catch (err) {
+    console.error(`[Filmativa] Error: ${err.message}`);
+    return null;
+  }
+}
+
+// ─── STREAM ENDPOINT ─────────────────────────────────────────────────────────
 app.get('/stream/:type/:id.json', async (req, res) => {
   const { type, id } = req.params;
-  console.log(`[Server] Stream requested: type=${type}, id=${id}`);
-
-  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-  const host = req.get('host');
+  console.log(`[Server] Stream: type=${type}, id=${id}`);
 
   const db = loadDatabase();
   const streams = [];
-
-  /**
-   * Wraps a filmativa embed URL into a URL pointing at our Edge Function proxy.
-   * The Edge Function runs on Cloudflare BoringSSL (Chrome TLS fingerprint) so
-   * it can bypass the filmativa CDN's TLS fingerprint check that blocks Node.js.
-   */
-  function filmativaProxyUrl(embedUrl) {
-    const enc = Buffer.from(embedUrl).toString('base64url');
-    return `${protocol}://${host}/api/hls-filmativa?embed=${enc}`;
-  }
 
   try {
     // ── MOVIE ─────────────────────────────────────────────────────────────────
@@ -114,18 +156,18 @@ app.get('/stream/:type/:id.json', async (req, res) => {
               const m = html.match(/<source\s+src="([^"]+)"/);
               if (m) streams.push({ name: 'Crtanko SD', url: m[1] });
             } catch (e) { console.error('[Movie] roda.php SD error:', e.message); }
+
           } else if (apiData.videolink.includes('player.filmativa.club')) {
-            // Filmativa: route through Edge Function (Chrome TLS fingerprint)
-            console.log(`[Movie] Filmativa SD via Edge proxy: ${apiData.videolink}`);
-            streams.push({ name: 'Crtanko SD', url: filmativaProxyUrl(apiData.videolink) });
+            const m3u8 = await resolveFilmativaM3u8(apiData.videolink);
+            if (m3u8) streams.push({ name: 'Crtanko SD', url: m3u8 });
           }
         }
 
         // HD stream
         if (apiData.videolinkhd) {
           if (apiData.videolinkhd.includes('player.filmativa.club')) {
-            console.log(`[Movie] Filmativa HD via Edge proxy: ${apiData.videolinkhd}`);
-            streams.push({ name: 'Crtanko HD', url: filmativaProxyUrl(apiData.videolinkhd) });
+            const m3u8 = await resolveFilmativaM3u8(apiData.videolinkhd);
+            if (m3u8) streams.push({ name: 'Crtanko HD', url: m3u8 });
           } else if (apiData.videolinkhd.includes('roda.php')) {
             try {
               const html = await (await fetch(apiData.videolinkhd, {
@@ -159,12 +201,12 @@ app.get('/stream/:type/:id.json', async (req, res) => {
             if (directUrl) streams.push({ name: `S${season}E${episode}`, url: directUrl });
 
           } else if (epUrl.includes('player.filmativa.club')) {
-            // Filmativa: route through Edge Function
+            // Filmativa: resolve to direct m3u8 URL, let Stremio fetch from user's IP
             console.log(`[Series] Filmativa episode ${episodeKey}: ${epUrl}`);
-            streams.push({
-              name: `S${season}E${episode} (HD)`,
-              url: filmativaProxyUrl(epUrl)
-            });
+            const m3u8 = await resolveFilmativaM3u8(epUrl);
+            if (m3u8) {
+              streams.push({ name: `S${season}E${episode} (HD)`, url: m3u8 });
+            }
 
           } else if (epUrl.includes('bysevepoin.com') || epUrl.includes('bysezoxexe.com')) {
             console.log(`[Series] Byse episode ${episodeKey}: ${epUrl}`);
@@ -178,11 +220,12 @@ app.get('/stream/:type/:id.json', async (req, res) => {
           }
         }
 
-        // Download link as fallback for filmativa series
+        // Download link as fallback
         if (item && item.download && item.download[episodeKey]) {
           const dlUrl = item.download[episodeKey];
           if (dlUrl.includes('player.filmativa.club')) {
-            streams.push({ name: `S${season}E${episode} (DL)`, url: filmativaProxyUrl(dlUrl) });
+            const m3u8 = await resolveFilmativaM3u8(dlUrl);
+            if (m3u8) streams.push({ name: `S${season}E${episode} (DL)`, url: m3u8 });
           }
         }
       }
