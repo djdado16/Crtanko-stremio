@@ -93,9 +93,8 @@ app.get('/stream/:type/:id.json', async (req, res) => {
    * it can bypass the filmativa CDN's TLS fingerprint check that blocks Node.js.
    */
   function filmativaProxyUrl(embedUrl) {
-    // base64url-encode the filmativa embed URL so it's safe in a query string
     const enc = Buffer.from(embedUrl).toString('base64url');
-    return `${protocol}://${host}/hls/filmativa?embed=${enc}`;
+    return `${protocol}://${host}/api/hls-filmativa?embed=${enc}`;
   }
 
   try {
