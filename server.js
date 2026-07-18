@@ -3,7 +3,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { resolveGoogleDrive, resolveCrtankoMovie, resolveFilmativa } from './resolver.js';
+import { resolveGoogleDrive, resolveCrtankoMovie, resolveFilmativa, resolveByseEmbed, resolveFilemoon } from './resolver.js';
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -242,7 +242,7 @@ app.get('/stream/:type/:id.json', async (req, res) => {
                 resolved = true;
               }
             } else if (gdUrl.includes('player.filmativa.club')) {
-              console.log(`[Server] Resolving Filmativa link for episode ${episodeKey}: ${gdUrl}`);
+              console.log(`[Server] Resolving Filmativa for episode ${episodeKey}: ${gdUrl}`);
               const directStreamUrl = await resolveFilmativa(gdUrl, userIp);
               if (directStreamUrl) {
                 const swappedUrl = replaceIpInSecipUrl(directStreamUrl, userIp);
@@ -263,6 +263,36 @@ app.get('/stream/:type/:id.json', async (req, res) => {
                 name: `Crtanko S${season}E${episode} (Web Player)`,
                 externalUrl: gdUrl
               });
+            } else if (gdUrl.includes('bysevepoin.com') || gdUrl.includes('bysezoxexe.com')) {
+              console.log(`[Server] Resolving Byse embed for episode ${episodeKey}: ${gdUrl}`);
+              const directStreamUrl = await resolveByseEmbed(gdUrl);
+              if (directStreamUrl) {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Direct Player)`,
+                  url: directStreamUrl
+                });
+                resolved = true;
+              } else {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Web Player)`,
+                  externalUrl: gdUrl
+                });
+              }
+            } else if (gdUrl.includes('filemoon')) {
+              console.log(`[Server] Resolving Filemoon for episode ${episodeKey}: ${gdUrl}`);
+              const directStreamUrl = await resolveFilemoon(gdUrl);
+              if (directStreamUrl) {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Direct Player)`,
+                  url: directStreamUrl
+                });
+                resolved = true;
+              } else {
+                streams.push({
+                  name: `Crtanko S${season}E${episode} (Web Player)`,
+                  externalUrl: gdUrl
+                });
+              }
             } else {
               streams.push({
                 name: `Crtanko S${season}E${episode} (Web Player)`,
