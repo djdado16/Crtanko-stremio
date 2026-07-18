@@ -6,9 +6,6 @@
   "functions": {
     "api/index.js": {
       "includeFiles": "crtanko_db.json"
-    },
-    "api/hls-filmativa.js": {
-      "runtime": "edge"
     }
   }
 }
