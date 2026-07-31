@@ -1656,11 +1656,11 @@
     }
   },
   "tt0400717": {
-    "url": "https://www.crtanko.xyz/sezona-lova/",
-    "slug": "sezona-lova",
+    "url": "https://www.crtanko.xyz/open-season/",
+    "slug": "open-season",
     "imdb_id": "tt0400717",
     "type": "movie",
-    "title": "Sezona lova",
+    "title": "Open Season",
     "poster": "https://image.tmdb.org/t/p/w342/w5Lctmkc1yah215Luxmci4djaiW.jpg",
     "year": 2026,
     "genres": [
@@ -1688,7 +1688,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "7484",
       "movieimdb": "tt0400717",
-      "post_id": "223",
+      "post_id": "113",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -1696,8 +1696,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt0400717",
-      "videolinkhd": "https://bysezoxexe.com/e/f6zg8luqx682/Sezona_Lova_2_2008_HR",
+      "videolink": "https://player.filmativa.club/e/SFJIWEpxWnJoUXBnYlZCaUIxRW1LZz09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -6302,12 +6302,12 @@
     }
   },
   "tt3416828": {
-    "url": "https://www.crtanko.xyz/ledeno-doba-5-veliki-udar/",
-    "slug": "ledeno-doba-5-veliki-udar",
+    "url": "https://www.crtanko.xyz/ledeno-doba-veliki-udar/",
+    "slug": "ledeno-doba-veliki-udar",
     "imdb_id": "tt3416828",
     "type": "movie",
-    "title": "Ledeno doba 5: Veliki udar",
-    "poster": "https://image.tmdb.org/t/p/w342/okF78W1AcXAenlYFE3vna9Uuqjp.jpg",
+    "title": "Ledeno doba veliki udar",
+    "poster": "https://image.tmdb.org/t/p/w342/yoJte90Tm0n7jHBeKqbUUE9v2LK.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -6334,7 +6334,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "278154",
       "movieimdb": "tt3416828",
-      "post_id": "3984",
+      "post_id": "321",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -6343,7 +6343,7 @@
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
       "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt3416828",
-      "videolinkhd": "",
+      "videolinkhd": "https://player.filmativa.club/e/Q3gzaEJPM2QxaWIzL1Q0dVpNeW5pZz09",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -13938,11 +13938,11 @@
     }
   },
   "tt0165982": {
-    "url": "https://www.crtanko.xyz/sinbad-legend-of-the-seven-seas/",
-    "slug": "sinbad-legend-of-the-seven-seas",
+    "url": "https://www.crtanko.xyz/sinbad-legenda-o-sedam-mora/",
+    "slug": "sinbad-legenda-o-sedam-mora",
     "imdb_id": "tt0165982",
     "type": "movie",
-    "title": "Sinbad: Legend of the Seven Seas",
+    "title": "Sinbad Legenda o Sedam Mora",
     "poster": "https://image.tmdb.org/t/p/w342/yiW2L1fDiBT7AeWXrykhTNtPrr8.jpg",
     "year": 2026,
     "genres": [
@@ -13970,7 +13970,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "14411",
       "movieimdb": "tt0165982",
-      "post_id": "685",
+      "post_id": "655",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -13978,8 +13978,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://player.filmativa.club/e/Z2FGc3MxYXpESWFEeUtHSkIxU3pzZz09",
-      "videolinkhd": "",
+      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt0165982",
+      "videolinkhd": "https://player.filmativa.club/e/OEJBcTNZSGM0VkxKNzRzQkxmaDFLQT09",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -16677,8 +16677,8 @@
     }
   },
   "tt10298840": {
-    "url": "https://www.crtanko.xyz/strange-world/",
-    "slug": "strange-world",
+    "url": "https://www.crtanko.xyz/cudesan-svijet/",
+    "slug": "cudesan-svijet",
     "imdb_id": "tt10298840",
     "type": "movie",
     "title": "Čudesan svijet",
@@ -16709,7 +16709,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "877269",
       "movieimdb": "tt10298840",
-      "post_id": "1540",
+      "post_id": "789",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -16717,8 +16717,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://filemoon.sx/e/498mx78dmlsj/_udesan_svijet__2022__SR_1080",
-      "videolinkhd": "https://player.filmativa.club/e/bklaV3NNSlorMmVDWHRkR20yTXhsUT09",
+      "videolink": "https://player.filmativa.club/e/U29mTHZ1Tm5iMnNLdGprM2o0NGFRdz09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -18631,12 +18631,12 @@
     }
   },
   "tt0424095": {
-    "url": "https://www.crtanko.xyz/prosiso-kroz-solju/",
-    "slug": "prosiso-kroz-solju",
+    "url": "https://www.crtanko.xyz/pusti-vodu-da-misevi-odu/",
+    "slug": "pusti-vodu-da-misevi-odu",
     "imdb_id": "tt0424095",
     "type": "movie",
-    "title": "Prošiš’o kroz šolju",
-    "poster": "https://image.tmdb.org/t/p/w342/o4JlinGGDwxfmtvyUotZQdDdLA2.jpg",
+    "title": "Pusti vodu da miševi odu",
+    "poster": "https://image.tmdb.org/t/p/w342/78czzq4yOr3yN2znedu0kWyv2Um.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -18663,7 +18663,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "11619",
       "movieimdb": "tt0424095",
-      "post_id": "2693",
+      "post_id": "1150",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -18671,8 +18671,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://player.filmativa.club/e/N1FiQkpNVDIrMHQ2dDRFTkVLeUpDQT09",
-      "videolinkhd": "",
+      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt0424095",
+      "videolinkhd": "https://player.filmativa.club/e/c0pHOU5uSENWNklzaEs3WEllTUxjQT09",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -20195,12 +20195,12 @@
     }
   },
   "tt8354218": {
-    "url": "https://www.crtanko.xyz/fireheart/",
-    "slug": "fireheart",
+    "url": "https://www.crtanko.xyz/vatreno-srce/",
+    "slug": "vatreno-srce",
     "imdb_id": "tt8354218",
     "type": "movie",
-    "title": "Fireheart",
-    "poster": "https://image.tmdb.org/t/p/w342/nmD0vZk8jQg1Suhs0iv9cj0xdtZ.jpg",
+    "title": "Vatreno srce",
+    "poster": "https://image.tmdb.org/t/p/w342/hepwOZWJNUmLzB68gKYEdEJAaD3.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -20227,7 +20227,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "778810",
       "movieimdb": "tt8354218",
-      "post_id": "1963",
+      "post_id": "1300",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -20235,8 +20235,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://player.filmativa.club/e/M0FxNGswN0c4c2FsNkdrMmkvWXZhUT09",
-      "videolinkhd": "",
+      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt8354218",
+      "videolinkhd": "https://player.filmativa.club/e/TnlGR3hOZ1kra0JCYmdhQVJFc2x6UT09",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -20627,11 +20627,11 @@
     }
   },
   "tt12615474": {
-    "url": "https://www.crtanko.xyz/ups-2-avantura-se-nastavlja-2/",
-    "slug": "ups-2-avantura-se-nastavlja-2",
+    "url": "https://www.crtanko.xyz/ups-2-avantura-se-nastavlja/",
+    "slug": "ups-2-avantura-se-nastavlja",
     "imdb_id": "tt12615474",
     "type": "movie",
-    "title": "Ups 2!: Avantura se nastavlja",
+    "title": "Ups 2! Avantura se nastavlja",
     "poster": "https://image.tmdb.org/t/p/w342/ckcn7tYzqVUABxMZhqHUbaSeLKf.jpg",
     "year": 2026,
     "genres": [
@@ -20659,7 +20659,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "587562",
       "movieimdb": "tt12615474",
-      "post_id": "1947",
+      "post_id": "1336",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -20667,8 +20667,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt12615474",
-      "videolinkhd": "https://upbolt.to/e/c2f6wpjri40d",
+      "videolink": "https://player.filmativa.club/e/SlhWWVo4KzZMV0RXSG1vTTVvODI2UT09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -20765,11 +20765,11 @@
     }
   },
   "tt9719256": {
-    "url": "https://www.crtanko.xyz/veliko-putovanje-2-specijalna-dostava/",
-    "slug": "veliko-putovanje-2-specijalna-dostava",
+    "url": "https://www.crtanko.xyz/big-trip-2-special-delivery/",
+    "slug": "big-trip-2-special-delivery",
     "imdb_id": "tt9719256",
     "type": "movie",
-    "title": "Veliko putovanje 2: Specijalna dostava",
+    "title": "Big Trip 2: Special Delivery",
     "poster": "https://image.tmdb.org/t/p/w342/dabXVfrAFfhDte8XVemom3mTJog.jpg",
     "year": 2026,
     "genres": [
@@ -20797,7 +20797,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "599019",
       "movieimdb": "tt9719256",
-      "post_id": "3132",
+      "post_id": "1352",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -20805,8 +20805,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt9719256",
-      "videolinkhd": "https://player.filmativa.club/e/MDlLUGxlQTlZakRJUy9CbVJDVHFzUT09",
+      "videolink": "https://player.filmativa.club/e/d3Qrc0FBRHZPRVhKUXNTOEx5Ri9hdz09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -22241,11 +22241,11 @@
     }
   },
   "tt11006950": {
-    "url": "https://www.crtanko.xyz/krcko-orascic-i-magicna-flauta/",
-    "slug": "krcko-orascic-i-magicna-flauta",
+    "url": "https://www.crtanko.xyz/the-nutcracker-and-the-magic-flute/",
+    "slug": "the-nutcracker-and-the-magic-flute",
     "imdb_id": "tt11006950",
     "type": "movie",
-    "title": "Krcko Oraščić i magična flauta",
+    "title": "The Nutcracker and The Magic Flute",
     "poster": "https://image.tmdb.org/t/p/w342/chXQkcnD6smZHEp3efWahocmszR.jpg",
     "year": 2026,
     "genres": [
@@ -22273,7 +22273,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "589759",
       "movieimdb": "tt11006950",
-      "post_id": "2503",
+      "post_id": "1485",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -22281,7 +22281,7 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://player.filmativa.club/e/YUQ5RmJYcGNwZzZUdWFyZXZTYW4vZz09",
+      "videolink": "https://player.filmativa.club/e/UnBYV2JDVklUMUhzOTVtS09GNWt4QT09",
       "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
@@ -23627,11 +23627,11 @@
     }
   },
   "tt22640250": {
-    "url": "https://www.crtanko.xyz/spongebob-squarepants-presents-the-tidal-zone/",
-    "slug": "spongebob-squarepants-presents-the-tidal-zone",
+    "url": "https://www.crtanko.xyz/spuzva-bob-skockani-predstavlja-zonu-plime/",
+    "slug": "spuzva-bob-skockani-predstavlja-zonu-plime",
     "imdb_id": "tt22640250",
     "type": "movie",
-    "title": "SpongeBob SquarePants Presents The Tidal Zone",
+    "title": "Spuzva Bob Skockani predstavlja Zonu plime",
     "poster": "https://image.tmdb.org/t/p/w342/rozwpOPiTEYnXygWGvUPST4lVQa.jpg",
     "year": 2026,
     "genres": [
@@ -23659,7 +23659,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "1088812",
       "movieimdb": "tt22640250",
-      "post_id": "1803",
+      "post_id": "1631",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -23667,7 +23667,7 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://player.filmativa.club/e/NmlaQnVCc1U4SlpzWHNmZHZNUEJwZz09",
+      "videolink": "https://player.filmativa.club/e/bzUrN25ncVQrZFhxc0l0a0IxR2lXZz09",
       "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
@@ -23971,8 +23971,8 @@
     }
   },
   "tt9434836": {
-    "url": "https://www.crtanko.xyz/medo-sa-sjevera-4-obiteljsko-putovanje-2/",
-    "slug": "medo-sa-sjevera-4-obiteljsko-putovanje-2",
+    "url": "https://www.crtanko.xyz/medo-sa-sjevera-4-obiteljsko-putovanje/",
+    "slug": "medo-sa-sjevera-4-obiteljsko-putovanje",
     "imdb_id": "tt9434836",
     "type": "movie",
     "title": "Medo sa sjevera 4: Obiteljsko putovanje",
@@ -24003,7 +24003,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "610045",
       "movieimdb": "tt9434836",
-      "post_id": "2381",
+      "post_id": "1675",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -24011,8 +24011,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt9434836",
-      "videolinkhd": "https://player.filmativa.club/e/cFBncmkrRndwMStWRXVKSGdXaFRUQT09",
+      "videolink": "https://player.filmativa.club/e/bW9Na3hGT0FOcGtEZUoxcmI1S3MvQT09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -24583,12 +24583,12 @@
     }
   },
   "tt15789038": {
-    "url": "https://www.crtanko.xyz/elementi/",
-    "slug": "elementi",
+    "url": "https://www.crtanko.xyz/elemental/",
+    "slug": "elemental",
     "imdb_id": "tt15789038",
     "type": "movie",
-    "title": "Elementi",
-    "poster": "https://image.tmdb.org/t/p/w342/4Y1WNkd88JXmGfhtWR7dmDAo1T2.jpg",
+    "title": "Elemental",
+    "poster": "https://image.tmdb.org/t/p/w342/6oH378KUfCEitzJkm07r97L0RsZ.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -24615,7 +24615,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "976573",
       "movieimdb": "tt15789038",
-      "post_id": "1878",
+      "post_id": "1838",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -24623,8 +24623,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt15789038",
-      "videolinkhd": "https://player.filmativa.club/e/TnBTdEd0OW5wUk1SRmdsbnpSMVU4Zz09",
+      "videolink": "https://player.filmativa.club/e/cUo4SndDSlJtUDFqKzhXUys3ejl1UT09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -24991,12 +24991,12 @@
     }
   },
   "tt27155038": {
-    "url": "https://www.crtanko.xyz/ruby-tinejdzerica-kraken-2/",
-    "slug": "ruby-tinejdzerica-kraken-2",
+    "url": "https://www.crtanko.xyz/ruby-tinejdzerica-kraken/",
+    "slug": "ruby-tinejdzerica-kraken",
     "imdb_id": "tt27155038",
     "type": "movie",
     "title": "Ruby: Tinejdžerica Kraken",
-    "poster": "https://image.tmdb.org/t/p/w342/8ChIb3WzYAcza1vrXR56v510MWk.jpg",
+    "poster": "https://image.tmdb.org/t/p/w342/lotWiuWuTGlQ94rzBdy6ZmKZnTA.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -25023,7 +25023,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "1040148",
       "movieimdb": "tt27155038",
-      "post_id": "1999",
+      "post_id": "1901",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -25031,17 +25031,17 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt27155038",
-      "videolinkhd": "https://player.filmativa.club/e/c1ZJSGtVUVpWSlpsVHF6S09Kc1dQdz09",
+      "videolink": "https://player.filmativa.club/e/cnplVXR3ZFp5cS9sZ2diTXVTS3BFQT09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
   "tt15837338": {
-    "url": "https://www.crtanko.xyz/paw-patrol-the-mighty-movie/",
-    "slug": "paw-patrol-the-mighty-movie",
+    "url": "https://www.crtanko.xyz/psici-u-ophodnji-mocni-film/",
+    "slug": "psici-u-ophodnji-mocni-film",
     "imdb_id": "tt15837338",
     "type": "movie",
-    "title": "PAW Patrol: The Mighty Movie",
+    "title": "Psići u ophodnji: Moćni Film",
     "poster": "https://image.tmdb.org/t/p/w342/aTvePCU7exLepwg5hWySjwxojQK.jpg",
     "year": 2026,
     "genres": [
@@ -25069,7 +25069,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "893723",
       "movieimdb": "tt15837338",
-      "post_id": "1920",
+      "post_id": "1905",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -25078,7 +25078,7 @@
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
       "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt15837338",
-      "videolinkhd": "https://bysezoxexe.com/e/2me6s03s1g4l/Psici_u_ophodnji_Mocan_film_2023_HR_SR_SLO",
+      "videolinkhd": "https://upbolt.to/e/qdg1yjg70mtb",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -29028,12 +29028,12 @@
     }
   },
   "tt13622970": {
-    "url": "https://www.crtanko.xyz/vaiana-2/",
-    "slug": "vaiana-2",
+    "url": "https://www.crtanko.xyz/moana-2/",
+    "slug": "moana-2",
     "imdb_id": "tt13622970",
     "type": "movie",
-    "title": "Vaiana 2",
-    "poster": "https://image.tmdb.org/t/p/w342/aLVkiINlIeCkcZIzb7XHzPYgO6L.jpg",
+    "title": "Moana 2",
+    "poster": "https://image.tmdb.org/t/p/w342/m0SbwFNCa9epW1X60deLqTHiP7x.jpg",
     "year": 2026,
     "genres": [
       "Action",
@@ -29060,7 +29060,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "1241982",
       "movieimdb": "tt13622970",
-      "post_id": "2460",
+      "post_id": "2414",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -29068,8 +29068,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt13622970",
-      "videolinkhd": "https://player.filmativa.club/e/cVNrSHREN0xnSG5iRGllWDZ2Y2pYQT09",
+      "videolink": "https://player.filmativa.club/e/eGdQVUtrZkt0bE9FejB4NW93eVNlUT09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -29212,8 +29212,8 @@
     }
   },
   "tt5822536": {
-    "url": "https://www.crtanko.xyz/paddington-in-peru/",
-    "slug": "paddington-in-peru",
+    "url": "https://www.crtanko.xyz/medvjedic-paddington-u-dzungli/",
+    "slug": "medvjedic-paddington-u-dzungli",
     "imdb_id": "tt5822536",
     "type": "movie",
     "title": "Medvjedić Paddington u Džungli",
@@ -29244,7 +29244,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "516729",
       "movieimdb": "tt5822536",
-      "post_id": "2847",
+      "post_id": "2446",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -29252,8 +29252,8 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt5822536",
-      "videolinkhd": "https://player.filmativa.club/e/NmR4VndoTW56WktocktSaUU5a2ZZZz09",
+      "videolink": "https://player.filmativa.club/e/VzFvSVNEUjNBNW53aWhmMWQxTVNqZz09",
+      "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
   },
@@ -31292,11 +31292,11 @@
     }
   },
   "tt0168856": {
-    "url": "https://www.crtanko.xyz/upomoc-ja-sam-riba/",
-    "slug": "upomoc-ja-sam-riba",
+    "url": "https://www.crtanko.xyz/upomoc-ja-sam-ribica/",
+    "slug": "upomoc-ja-sam-ribica",
     "imdb_id": "tt0168856",
     "type": "movie",
-    "title": "Upomoć, ja sam riba!",
+    "title": "Upomoc Ja Sam Ribica",
     "poster": "https://image.tmdb.org/t/p/w342/s9yFQD19xJqXEnAnUAZFUan25DJ.jpg",
     "year": 2026,
     "genres": [
@@ -31324,7 +31324,7 @@
       "tmdbapi": "49101d62654e71a2931722642ac07e5e",
       "movie": "12609",
       "movieimdb": "tt0168856",
-      "post_id": "4150",
+      "post_id": "2734",
       "language": "en-US",
       "multiserver": "Multi Server",
       "regista": "Director",
@@ -31332,7 +31332,7 @@
       "noImg": "https://www.crtanko.xyz/wp-content/themes/crtanko/assets/images/noimage.jpg",
       "site": "https://www.crtanko.xyz",
       "imgDir": "https://www.crtanko.xyz/wp-content/themes/crtanko",
-      "videolink": "https://www.crtanko.xyz/filemoon.php?id=tt0168856",
+      "videolink": "https://player.filmativa.club/e/VGFEYXN0ZE1lOEd6bVdLc09EeDBHUT09",
       "videolinkhd": "",
       "disqus_shortname": "moviewordpress"
     }
